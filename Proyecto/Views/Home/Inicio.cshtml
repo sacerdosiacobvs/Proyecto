@@ -1,0 +1,248 @@
+﻿@{
+
+    ViewBag.Title = "Inicio";
+
+    if (Proyecto.Models.Credenciales.u_tipo == "ADMIN")
+    {
+        Layout = "~/Views/Shared/Layout_Admin.cshtml";
+    }
+    else
+    {
+        if (Proyecto.Models.Credenciales.u_tipo == "GUEST")
+        {
+            Layout = "~/Views/Shared/Layout_Guest.cshtml";
+        }
+        else
+        {
+            if(Proyecto.Models.Credenciales.u_tipo == "")
+            {
+                Response.Redirect("Index");
+            }
+        }
+    }
+
+
+    Proyecto.Models.Notificaciones notificaciones = new Proyecto.Models.Notificaciones();
+    string cantidad = notificaciones.Cantidad_Notificaciones();
+
+    ViewBag.Lista_informes = notificaciones.Obtener_Notificaciones_Tabla();
+
+
+    Proyecto.Models.Informe informe = new Proyecto.Models.Informe();
+
+    ViewBag.Lista = informe.Obtener_Informes_Calendario();
+}
+
+@model Proyecto.Models.Inicio
+
+<table id="todoTable" style="display:none">
+    @foreach (var item in ViewBag.Lista.Tables[0].Rows)
+    {
+        <tr>
+            <td>@item["ID_CASO"].ToString()</td>
+            <td>@item["DESCRIPCION"].ToString()</td>
+            <td>@item["FECHA_RESPUESTA"].ToString()</td>
+        </tr>
+    }
+</table>
+
+
+<!DOCTYPE html>
+
+<title>Inicio</title>
+<html>
+<body style="background-color:#E7E9EB">
+    <div id="cuerpo" onclick="Cerrar_Usuario_Notificaciones()">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+        <style>
+            h1, h2, h3, h4, h5, h6 {
+                font-family: "Oswald"
+            }
+
+            body {
+                font-family: "Open Sans"
+            }
+
+            .column {
+                float: left;
+                width: 50%;
+                padding: 10px;
+                height: 560px;
+            }
+
+            .busqueda-rapida {
+                background-repeat: no-repeat;
+                background-image: url('/Imagenes/santa_barbara_fondo.jpg');
+                background-size: cover;
+                min-height: 400px;
+                width: 100%;
+            }
+        </style>
+
+        <div class="w3-content w3-white" style="max-width:1500px;min-height:1400px">
+            <header class="w3-container w3-center w3-padding-48 w3-white">
+                <img src="~/Imagenes/logo_santa_barbara.png" style="width:30%">
+            </header>
+
+            <div class="w3-container w3-center" style="font-size:23px">
+                <div class="busqueda-rapida">
+                    <br /><br /><br />
+                    <div style="width:50%;margin-right:25%;margin-left:25%;background-color:rgba(255,255,255, 0.6)">
+                        <h2>Busqueda rápida</h2>
+                        @using (Html.BeginForm())
+                        {
+                            <b style="font-size:21px">Número de expediente: </b>
+                            @Html.TextBoxFor(x => x.id_caso, new { @class = "badge-light", placeholder = "00-0000-0000-XX" })
+                            <input class="w3-button w3-green" name="buscar_inicio" style="font-size:15px" type="submit" value="Aceptar">
+                            <br />
+                            <b style="font-size:21px">@Html.ValidationSummary()</b>
+                            <b style="font-size:21px;color:red">@ViewBag.ErrorMessage</b>
+
+                        }
+                        <br />
+                    </div>
+                </div>
+                <br /><br />
+
+                <div class="column">
+                    <div class="w3-container w3-padding w3-black">
+                        <a style="text-decoration:none" href=@Url.Action("Calendario", "Home")><h3>Calendario</h3></a>
+                    </div>
+
+                    <div class="w3-container" style="font-size:22px">
+                        <div class="calendarContainer">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="w3-container w3-padding w3-red">
+                        <h3>Informes próximos a vencer</h3>
+                    </div>
+                    <div class="w3-bar-block" style="overflow:scroll;height:100%;font-size:18px">
+
+                        @{foreach (var item in ViewBag.Lista_informes.Tables[0].Rows)
+                            {
+                                <a href=@Url.Action("Enviar_Correo", "Home", new { id = @item["ID_INFORME"].ToString()}) class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-warning" style="color:red"></i> @item["ID_CASO"].ToString()</a>
+                            }
+                        }
+
+                    </div>
+
+                    @*<div class="w3-container w3-padding w3-blue">
+                        <h3>Datos de usuario</h3>
+                    </div>
+                    <div class="w3-container w3-white">
+                        <div class="w3-container w3-display-container w3-light-grey w3-section w3-center">
+                            <div class="column">
+                                <img src="~/Imagenes/user.png" alt="Inicio" style="width:75%">
+                            </div>
+                            <div class="column">
+                                <b style="font-size:25px">117290180</b><br /><br />
+                                <b style="font-size:25px">Adrián Solano García</b>
+                                <p style="font-size:22px">Administrador</p>
+
+                                <b style="font-size:25px">@Proyecto.Models.Credenciales.u_cedula</b>
+                                <b style="font-size:25px">@Proyecto.Models.Credenciales.u_nombre</b>
+                                <p style="font-size:22px">@Proyecto.Models.Credenciales.u_tipo</p>
+                            </div>
+                        </div>
+                    </div>*@
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.js"></script>
+<script src="http://getbootstrap.com/javascript/#tooltips"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+
+
+    let eventsArr = loadData();
+    let calendar = initCalendar();
+    function loadData() {
+        let eventsArr = [];
+        let todoTable = document.getElementById("todoTable");
+        let trElem = todoTable.getElementsByTagName("tr");
+        console.log(trElem);
+
+
+        for (let tr of trElem) {
+            console.log(tr);
+            let tdElems = tr.getElementsByTagName("td");
+            let eventObj = {
+                id: tdElems[0].innerText,
+                title: '🔔',
+                start: tdElems[2].innerText,
+                color: 'white',
+                //url: 'Contact',
+                extendedProps: {
+                    descripcion: tdElems[1].innerText,
+                    titulus: tdElems[0].innerText
+                },
+
+            }
+
+            eventsArr.push(eventObj);
+        }
+
+        return eventsArr;
+    }
+
+
+
+    function initCalendar() {
+        var calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            editable: true,
+            selectable: false,
+            dayMaxEvents: true,
+
+            nowIndicator: false,
+            navLinks: false,
+            selectMirror: false,
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: null,
+                center: null,
+                right: null
+
+            },
+
+            events: eventsArr,
+
+            eventClick: function (info) {
+
+                let nueva_fecha = info.event.start.getDate() + "-" + (info.event.start.getMonth() + 1) + "-" + info.event.start.getFullYear();
+
+                swal("Expediente: " + info.event.extendedProps.titulus, "Descripción: " + info.event.extendedProps.descripcion + "\n\n" + "Fecha: " + nueva_fecha, "");
+
+            },
+
+        });
+
+        calendar.render();
+        return calendar;
+    }
+    calendar.setOption('locale', 'es');
+
+
+</script>

@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "Correo_Usuario";
+}
+
+@model Proyecto.Models.Correo_Usuario
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Correo_Usuario</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            border: 0;
+            outline: 0;
+            font-size: 100%;
+            vertical-align: baseline;
+            background: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .cuerpo {
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url('https://upload.wikimedia.org/wikipedia/commons/e/e6/Santa_B%C3%A1rbara_de_Heredia.jpg');
+            background-position: center;
+            background-size: cover;
+            position: absolute;
+        }
+
+        .caja-formulario {
+            width: 380px;
+            height: 480px;
+            position: relative;
+            margin: 6% auto;
+            background: #fff;
+            padding: 5px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .caja-boton {
+            width: 230px;
+            margin: 35px auto;
+            position: relative;
+            box-shadow: 0 0 20px 9px rgba(193, 193, 193, 0.85);
+            border-radius: 30px;
+        }
+
+        .cambiar-boton {
+            padding: 10px 40px;
+            background-color: transparent;
+            border: 0;
+            outline: none;
+            position: relative;
+        }
+
+        #boton {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right,#00d0ff,#ef18ff);
+            border-radius: 20px;
+            transition: -5s;
+        }
+
+        .grupo-form {
+            position: absolute;
+            width: 280px;
+            transition: .5s;
+        }
+
+        .espacio-input {
+            width: 100%;
+            padding: 10px 0;
+            margin: 5px 0;
+            border-bottom: 1px solid #999;
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            outline: none;
+            background-color: transparent;
+            border-radius: 10px;
+        }
+
+        .boton {
+            width: 80%;
+            padding: 10px 30px;
+            cursor: pointer;
+            display: block;
+            margin: auto;
+            background: linear-gradient(to right,#00d0ff,#ef18ff);
+            border: 0;
+            outline: none;
+            border-radius: 20px;
+        }
+
+        #id_login {
+            left: 50px;
+        }
+
+        #id_registro {
+            left: 450px;
+        }
+
+        .errores {
+            width: 25%;
+            font-size: 16px;
+            display: block;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.85);
+            border: 0;
+            outline: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cuerpo">
+        <meta charset="UTF-8">
+        <div class="caja-formulario" id="caja_f">
+            <div class="caja-boton">
+                <div id="boton"></div>
+                <button type="button" class="cambiar-boton">Recuperación de datos</button>
+            </div>
+            <div class="grupo-form" id="id_login">
+                <h2>Ingrese sus datos</h2>
+                @using (Html.BeginForm())
+                {
+                    @Html.TextBoxFor(x => x.cedula, new { @class = "espacio-input", placeholder = "Cédula" })
+                    <br /><br />
+                    @Html.TextBoxFor(x => x.destino, new { @class = "espacio-input", placeholder = "Correo electrónico" })
+                    <br /><br />
+                    <input class="boton" name="submitButton" type="submit" value="Enviar correo">
+                    <br /><br />
+                }
+                <dvi style="text-align:center">
+                    <a href=@Url.Action("Index", "Home")><p>Volver</p></a>
+                </dvi>
+            </div>
+        </div>
+        <div class="text-center errores">
+            <b style="color:black">@ViewBag.ErrorMessage</b>
+            <b style="color:black">@Html.ValidationSummary()</b>
+        </div>
+
+    </div>
+
+</body>
+</html>

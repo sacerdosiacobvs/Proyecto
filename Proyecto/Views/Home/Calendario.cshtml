@@ -1,0 +1,150 @@
+﻿@{
+
+    ViewBag.Title = "Calendario";
+
+    if (Proyecto.Models.Credenciales.u_tipo == "ADMIN")
+    {
+        Layout = "~/Views/Shared/Layout_Admin.cshtml";
+    }
+    else
+    {
+        if (Proyecto.Models.Credenciales.u_tipo == "GUEST")
+        {
+            Layout = "~/Views/Shared/Layout_Guest.cshtml";
+        }
+        else
+        {
+            if (Proyecto.Models.Credenciales.u_tipo == "")
+            {
+                Response.Redirect("Index");
+            }
+        }
+    }
+
+
+}
+
+<table id="todoTable" style="display:none">
+    @foreach (var item in ViewBag.Lista.Tables[0].Rows)
+    {
+        <tr>
+            <td>@item["ID_CASO"].ToString()</td>
+            <td>@item["DESCRIPCION"].ToString()</td>
+            <td>@item["FECHA_RESPUESTA"].ToString()</td>
+        </tr>
+    }
+</table>
+
+<!DOCTYPE html>
+
+<title>Calendario</title>
+<html>
+<body style="background-color:#E7E9EB">
+    <div id="cuerpo" onclick="Cerrar_Usuario_Notificaciones()">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            h1, h2, h3, h4, h5, h6 {
+                font-family: "Oswald"
+            }
+
+            body {
+                font-family: "Open Sans"
+            }
+        </style>
+
+        <div class="w3-content w3-white" style="max-width:1600px">
+            <div class="w3-content" style="max-width:90%">
+                <h2>Calendario</h2>
+                <div class="calendarContainer" style="max-width:100%">
+                    <div id="calendar"></div>
+                    @*<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Tooltip on top</button>*@
+                </div>
+            </div>
+            <br /><br />
+        </div>
+    </div>
+</body>
+</html>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.js"></script>
+<script src="http://getbootstrap.com/javascript/#tooltips"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+
+
+    let eventsArr = loadData();
+    let calendar = initCalendar();
+    function loadData() {
+        let eventsArr = [];
+        let todoTable = document.getElementById("todoTable");
+        let trElem = todoTable.getElementsByTagName("tr");
+        console.log(trElem);
+
+
+        for (let tr of trElem) {
+            console.log(tr);
+            let tdElems = tr.getElementsByTagName("td");
+            let eventObj = {
+                id: tdElems[0].innerText,
+                title: tdElems[0].innerText,
+                start: tdElems[2].innerText,
+                color: 'red',
+                //url: 'Contact',
+                extendedProps: {
+                    descripcion: tdElems[1].innerText
+                },
+            }
+
+            eventsArr.push(eventObj);
+        }
+
+        return eventsArr;
+    }
+
+
+
+    function initCalendar() {
+        var calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            editable: true,
+            selectable: true,
+            dayMaxEvents: true,
+
+            nowIndicator: true,
+            navLinks: true,
+            selectMirror: true,
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+
+            },
+
+            events: eventsArr,
+
+
+            eventClick: function (info) {
+
+                let nueva_fecha = info.event.start.getDate() + "-" + (info.event.start.getMonth() + 1) + "-" + info.event.start.getFullYear();
+
+                swal("Expediente: " + info.event.title, "Descripción: " + info.event.extendedProps.descripcion + "\n\n" + "Fecha: " + nueva_fecha,"");
+
+            },
+
+
+        });
+        calendar.render();
+        return calendar;
+    }
+    calendar.setOption('locale', 'es');
+
+</script>

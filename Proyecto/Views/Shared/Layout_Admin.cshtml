@@ -1,0 +1,354 @@
+﻿
+@{
+    ViewBag.Title = "Layout_Admin";
+
+}
+
+
+@{       
+    Proyecto.Models.Notificaciones notificaciones = new Proyecto.Models.Notificaciones();
+    string cantidad = notificaciones.Cantidad_Notificaciones();
+
+    ViewBag.Lista_informes = notificaciones.Obtener_Notificaciones_Tabla();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Layout_Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<!-- w3-cyan w3-text-white -->
+<!-- w3-teal -->
+
+<body>
+    <!-- Sidebar -->
+    <div class="w3-sidebar w3-bar-block w3-teal w3-card w3-animate-left" style="font-size:20px;width:13%" id="menu">
+        <a href="#" class="w3-bar-item w3-button w3-red w3-border-bottom" onclick="cerrar()"><i class="fa fa-window-close"></i> Cerrar</a>
+        <a href=@Url.Action("Inicio", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-home"></i> Inicio</a>
+        <a href=@Url.Action("Calendario", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-calendar-check-o"></i> Calendario</a>
+        <div class="w3-dropdown-click">
+            <button class="w3-button" onclick="dropDown()">
+                <i class="fa fa-file-text"></i> Expedientes <i class="fa fa-caret-down"></i>
+            </button>
+            <div id="drop" class="w3-hide w3-white w3-card" style="font-size:18px">
+                <a href=@Url.Action("Ingresar_Caso", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-plus-circle"></i> Nuevo</a>
+                <a href=@Url.Action("Mostrar_Casos", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-search"></i> Buscar</a>
+            </div>
+        </div>
+        <div class="w3-dropdown-click">
+            <button class="w3-button" onclick="dropDown2()">
+                <i class="fa fa-envelope"></i> Informes <i class="fa fa-caret-down"></i>
+            </button>
+            <div id="drop2" class="w3-hide w3-white w3-card" style="font-size:18px">
+                <a href=@Url.Action("Ingresar_Informe", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-plus-circle"></i> Nuevo</a>
+                <a href=@Url.Action("Mostrar_Informes", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-search"></i> Buscar</a>
+            </div>
+        </div>
+        <div class="w3-dropdown-click">
+            <button class="w3-button" onclick="dropDown3()">
+                <i class="fa fa-user"></i> Usuarios <i class="fa fa-caret-down"></i>
+            </button>
+            <div id="drop3" class="w3-hide w3-white w3-card" style="font-size:18px">
+                <a href=@Url.Action("Ingresar_Usuario", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-plus-circle"></i> Nuevo</a>
+                <a href=@Url.Action("Mostrar_Usuarios", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-search"></i> Buscar</a>
+            </div>
+        </div>
+        <div class="w3-dropdown-click">
+            <button class="w3-button" onclick="dropDown4()">
+                <i class="fa fa-archive"></i> Archivados <i class="fa fa-caret-down"></i>
+            </button>
+            <div id="drop4" class="w3-hide w3-white w3-card" style="font-size:18px">
+                <a href=@Url.Action("Ingresar_Archivado", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-plus-circle"></i> Nuevo</a>
+                <a href=@Url.Action("Mostrar_Archivados", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-search"></i> Buscar</a>
+            </div>
+        </div>
+        <div class="w3-dropdown-click">
+            <button class="w3-button" onclick="dropDown5()">
+                <i class="fa fa-address-book"></i> Contactos <i class="fa fa-caret-down"></i>
+            </button>
+            <div id="drop5" class="w3-hide w3-white w3-card" style="font-size:18px">
+                <a href=@Url.Action("Ingresar_Contacto", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-plus-circle"></i> Nuevo</a>
+                <a href=@Url.Action("Mostrar_Contactos", "Home") class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-search"></i> Buscar</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="w3-sidebar w3-bar-block w3-card" style="display:none;right:8.3%;margin-top:2.7%;min-width:15%" id="notificaciones">
+        <div class="w3-center" style="font-size:16px">
+            <b class="w3-bar-item w3-border-bottom"> Notificaciones </b>
+            @{
+                foreach (var item in ViewBag.Lista_informes.Tables[0].Rows)
+                {
+                    <a href=@Url.Action("Enviar_Correo", "Home", new { id = @item["ID_INFORME"].ToString()}) class="w3-bar-item w3-button w3-border-bottom"><i class="fa fa-warning" style="color:red"></i> @item["ID_CASO"].ToString()</a>
+                }
+
+            }
+        </div>
+    </div>
+
+
+    <div class="w3-sidebar w3-bar-block w3-card w3-animate-right" style="display:none;right:0;margin-top:2.7%;min-width:12%" id="menu_usuario">
+        <div class="w3-center" style="font-size:16px">
+            <img src="~/Imagenes/user.png" style="width:76%;margin-top:8%;margin-bottom:3%">
+            <p class="w3-border-bottom">@Proyecto.Models.Credenciales.u_cedula.ToString()</p>
+            <p class="w3-border-bottom">@Proyecto.Models.Credenciales.u_nombre.ToString()</p>
+            <p class="w3-border-bottom">@Proyecto.Models.Credenciales.u_tipo.ToString()</p>
+            <a href=@Url.Action("Index", "Home") class="w3-bar-item w3-button w3-red" style="text-align:center;width:100%"><i class="fa fa-sign-out"></i> Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div id="encabezado">
+
+        <div class="w3-teal">
+            <button class="w3-button w3-xlarge" onclick="abrir()">☰ MENÚ PRINCIPAL</button>
+            <button class="w3-button w3-xlarge w3-right" onclick="abrirMenuUsuario()"><i class="fa fa-user"></i> USUARIO</button>
+            <button class="w3-button w3-xlarge w3-right" onclick="abrirNotificaciones()"><i class="fa fa-bell"></i> @cantidad</button>
+        </div>
+
+    </div>
+
+    @RenderBody()
+
+    <script>
+
+
+        document.getElementById("cuerpo").style.marginLeft = "13%";
+        document.getElementById("encabezado").style.marginLeft = "13%";
+
+        function abrir() {
+            document.getElementById("cuerpo").style.marginLeft = "13%";
+            document.getElementById("encabezado").style.marginLeft = "13%";
+            document.getElementById("menu").style.width = "13%";
+            document.getElementById("menu").style.display = "block";
+
+        }
+
+        function cerrar() {
+            document.getElementById("cuerpo").style.marginLeft = "0%";
+            document.getElementById("encabezado").style.marginLeft = "0%";
+            document.getElementById("menu").style.display = "none";
+        }
+
+        function dropDown() {
+            var x = document.getElementById("drop");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += " w3-green";
+            } else {                                                                      //Copiar y adaptar los otros ids drop2, drop3 etc.. para ocultar los otros automaticamente
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                    x.previousElementSibling.className.replace(" w3-green", "");
+            }
+
+            var y = document.getElementById("drop2");
+            y.className = x.className.replace(" w3-show", "");
+            y.previousElementSibling.className =
+                y.previousElementSibling.className.replace(" w3-green", "");
+
+            var z = document.getElementById("drop3");
+            z.className = x.className.replace(" w3-show", "");
+            z.previousElementSibling.className =
+                z.previousElementSibling.className.replace(" w3-green", "");
+
+            var w = document.getElementById("drop4");
+            w.className = x.className.replace(" w3-show", "");
+            w.previousElementSibling.className =
+                w.previousElementSibling.className.replace(" w3-green", "");
+
+            var v = document.getElementById("drop5");
+            v.className = x.className.replace(" w3-show", "");
+            v.previousElementSibling.className =
+                v.previousElementSibling.className.replace(" w3-green", "");
+        }
+
+        function dropDown2() {
+            var x = document.getElementById("drop2");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += " w3-green";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                    x.previousElementSibling.className.replace(" w3-green", "");
+            }
+
+            var y = document.getElementById("drop");
+            y.className = x.className.replace(" w3-show", "");
+            y.previousElementSibling.className =
+                y.previousElementSibling.className.replace(" w3-green", "");
+
+            var z = document.getElementById("drop3");
+            z.className = x.className.replace(" w3-show", "");
+            z.previousElementSibling.className =
+                z.previousElementSibling.className.replace(" w3-green", "");
+
+            var w = document.getElementById("drop4");
+            w.className = x.className.replace(" w3-show", "");
+            w.previousElementSibling.className =
+                w.previousElementSibling.className.replace(" w3-green", "");
+
+            var v = document.getElementById("drop5");
+            v.className = x.className.replace(" w3-show", "");
+            v.previousElementSibling.className =
+                v.previousElementSibling.className.replace(" w3-green", "");
+
+        }
+
+        function dropDown3() {
+            var x = document.getElementById("drop3");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += " w3-green";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                    x.previousElementSibling.className.replace(" w3-green", "");
+            }
+
+            var y = document.getElementById("drop2");
+            y.className = x.className.replace(" w3-show", "");
+            y.previousElementSibling.className =
+                y.previousElementSibling.className.replace(" w3-green", "");
+
+            var z = document.getElementById("drop");
+            z.className = x.className.replace(" w3-show", "");
+            z.previousElementSibling.className =
+                z.previousElementSibling.className.replace(" w3-green", "");
+
+            var w = document.getElementById("drop4");
+            w.className = x.className.replace(" w3-show", "");
+            w.previousElementSibling.className =
+                w.previousElementSibling.className.replace(" w3-green", "");
+
+            var v = document.getElementById("drop5");
+            v.className = x.className.replace(" w3-show", "");
+            v.previousElementSibling.className =
+                v.previousElementSibling.className.replace(" w3-green", "");
+
+        }
+
+        function dropDown4() {
+            var x = document.getElementById("drop4");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += " w3-green";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                    x.previousElementSibling.className.replace(" w3-green", "");
+            }
+
+            var y = document.getElementById("drop2");
+            y.className = x.className.replace(" w3-show", "");
+            y.previousElementSibling.className =
+                y.previousElementSibling.className.replace(" w3-green", "");
+
+            var z = document.getElementById("drop3");
+            z.className = x.className.replace(" w3-show", "");
+            z.previousElementSibling.className =
+                z.previousElementSibling.className.replace(" w3-green", "");
+
+            var w = document.getElementById("drop");
+            w.className = x.className.replace(" w3-show", "");
+            w.previousElementSibling.className =
+                w.previousElementSibling.className.replace(" w3-green", "");
+
+            var v = document.getElementById("drop5");
+            v.className = x.className.replace(" w3-show", "");
+            v.previousElementSibling.className =
+                v.previousElementSibling.className.replace(" w3-green", "");
+
+        }
+
+        function dropDown5() {
+            var x = document.getElementById("drop5");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += " w3-green";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                    x.previousElementSibling.className.replace(" w3-green", "");
+            }
+
+            var y = document.getElementById("drop2");
+            y.className = x.className.replace(" w3-show", "");
+            y.previousElementSibling.className =
+                y.previousElementSibling.className.replace(" w3-green", "");
+
+            var z = document.getElementById("drop3");
+            z.className = x.className.replace(" w3-show", "");
+            z.previousElementSibling.className =
+                z.previousElementSibling.className.replace(" w3-green", "");
+
+            var w = document.getElementById("drop4");
+            w.className = x.className.replace(" w3-show", "");
+            w.previousElementSibling.className =
+                w.previousElementSibling.className.replace(" w3-green", "");
+
+            var v = document.getElementById("drop");
+            v.className = x.className.replace(" w3-show", "");
+            v.previousElementSibling.className =
+                v.previousElementSibling.className.replace(" w3-green", "");
+
+        }
+
+        function abrirMenuUsuario() {
+            var x = document.getElementById("menu_usuario");
+            if (x.style.display == "none") {
+                x.style.display = "block";
+                x.style.maxHeight = "39%";
+            } else {
+                cerrarMenuUsuario();
+            }
+
+            //document.getElementById("menu_usuario").style.display = "block";
+            //document.getElementById("menu_usuario").style.maxHeight = "40%";
+            cerrarNotificaciones();
+        }
+
+        function cerrarMenuUsuario() {
+            document.getElementById("menu_usuario").style.display = "none";
+        }
+
+        function abrirNotificaciones() {
+            var x = document.getElementById("notificaciones");
+            if (x.style.display == "none") {
+                x.style.display = "block";
+                x.style.maxHeight = "40%";
+            } else {
+                cerrarNotificaciones();
+            }
+
+            //document.getElementById("notificaciones").style.display = "block";
+            //document.getElementById("notificaciones").style.maxHeight = "40%";
+            cerrarMenuUsuario();
+        }
+
+        function cerrarNotificaciones() {
+            document.getElementById("notificaciones").style.display = "none";
+        }
+
+        function Cerrar_Usuario_Notificaciones() {
+            cerrarNotificaciones();
+            cerrarMenuUsuario();
+        }
+    </script>
+
+
+
+    <footer class="w3-teal" style="font-size:14px">
+        <span class="w3-right" style="margin-right:1%">@DateTime.Now.Date.ToShortDateString()</span>
+        <div style="margin-left:1%">
+            <span>Sistema de Gestión de Casos Legales</span><br />
+            <span>Municipalidad de Santa Bárbara de Heredia</span>
+        </div>
+    </footer>
+
+</body>
+</html>

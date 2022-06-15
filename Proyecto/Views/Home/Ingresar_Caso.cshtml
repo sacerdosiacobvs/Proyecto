@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Ingresar_Caso";
+
+    if (Proyecto.Models.Credenciales.u_tipo == "ADMIN")
+    {
+        Layout = "~/Views/Shared/Layout_Admin.cshtml";
+    }
+    else
+    {
+        if (Proyecto.Models.Credenciales.u_tipo == "GUEST")
+        {
+            Layout = "~/Views/Shared/Layout_Guest.cshtml";
+        }
+        else
+        {
+            if (Proyecto.Models.Credenciales.u_tipo == "")
+            {
+                Response.Redirect("Index");
+            }
+        }
+    }
+
+
+}
+
+@model Proyecto.Models.Caso
+
+
+<!DOCTYPE html>
+
+<title>Ingresar Caso</title>
+<html>
+<body style="background-color:#E7E9EB">
+    <div id="cuerpo" onclick="Cerrar_Usuario_Notificaciones()">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+        <style>
+            h1, h2, h3, h4, h5, h6 {
+                font-family: "Oswald"
+            }
+
+            body {
+                font-family: "Open Sans"
+            }
+
+            .column {
+                float: left;
+                width: 50%;
+                padding: 10px;
+            }
+        </style>
+
+        <div class="w3-content w3-white" style="max-width:1400px;min-height:1100px">
+            <header class="w3-container w3-center w3-padding-48 w3-white">
+                <h1 class="w3-xxxlarge"><b>REGISTRAR NUEVO EXPEDIENTE</b></h1>
+            </header>
+            <div class="w3-container w3-center w3-white" style="font-size:20px">
+                @using (Html.BeginForm())
+                {
+                    <div class="column">
+                        <br />
+
+                        <img src="~/Imagenes/agenda.png" alt="Inicio" style="width:90%">
+                        <br /><br /><br />
+                        <b style="font-size:25px">Tipo de expediente</b><br />
+                        @Html.DropDownListFor(x => x.tipo_expediente, new List<SelectListItem>() { new SelectListItem() { Text = "Judicial" }, new SelectListItem { Text = "Administrativo" } })
+                        <br /><br /><br />
+                        <input class="w3-button w3-green" style="font-size:23px" type="submit" value="Aceptar">
+                        <br />
+                        <p style="color:red">@ViewBag.ErrorMessage</p>
+                        <p style="color:green">@ViewBag.SuccessMessage</p>
+                        @Html.ValidationSummary()
+
+                    </div>
+                    <div class="column">
+                        <br />
+                        <b>Número de expediente</b><br />
+                        @Html.TextBoxFor(x => x.id_caso, new { @class = "badge-light", placeholder = "00-0000-0000-XX" })
+                        <br /><br />
+                        <b>Estado</b><br />
+                        @Html.DropDownListFor(x => x.estado, new List<SelectListItem>() { new SelectListItem() { Text = "Pendiente" }, new SelectListItem { Text="Revisar" }, new SelectListItem {Text="Sin lugar" }, new SelectListItem { Text = "Imposible de continuar" }, new SelectListItem { Text = "Inadmisible" } }
+                                    , " - Seleccionar estado - ", new { @style = "width:240px" })
+                        <br /><br />
+                        <b>Tipo de proceso</b><br />
+                        @Html.DropDownListFor(x => x.tipo_proceso, new List<SelectListItem>() { new SelectListItem() { Text = "Recurso de Amparo" }, new SelectListItem { Text="Acoso Laboral" }, new SelectListItem {Text="Clasificación de Huelga" }, new SelectListItem { Text = "Ordinario Laboral" }, new SelectListItem { Text = "Jerarquía Impropia" }, new SelectListItem { Text = "Riesgo de Trabajo" }, new SelectListItem { Text = "Recurso de Revocatoria" } }
+                                    , " - Seleccionar proceso - ", new { @style = "width:250px" })
+                        <br /><br />
+                        <b>Descripción</b><br />
+                        @Html.TextAreaFor(x => x.descripcion, new { @class = "badge-light", placeholder = "Descripción" })
+                        <br /><br />
+                        <div id="judicial">
+                            <b>Actora</b><br />
+                            @Html.TextBoxFor(x => x.actora, new { @class = "badge-light", placeholder = "Actora" })
+                            <br /><br />
+                            <b>Demandada</b><br />
+                            @Html.TextBoxFor(x => x.demandada, new { @class = "badge-light", placeholder = "Demandada" })
+                            <br /><br />
+                            <b>Valor</b><br />
+                            @Html.TextBoxFor(x => x.valor, new { @class = "badge-light", placeholder = "0", @type = "number" })
+                            <br /><br />
+                            <b>Juzgado:</b><br />
+                            @Html.TextBoxFor(x => x.juzgado, new { @class = "badge-light", placeholder = "Juzgado" })
+                            <br /><br />
+                        </div>
+                        <div id="admin">
+                            <b>Partes</b><br />
+                            @Html.TextAreaFor(x => x.partes, new { @class = "badge-light", placeholder = "Partes" })
+                            <br /><br />
+                            <b>Unidad</b><br />
+                            @Html.TextBoxFor(x => x.unidad, new { @class = "badge-light", placeholder = "Unidad" })
+                            <br /><br />
+                        </div>
+                    </div>
+
+                }
+            </div>
+            <br /><br /><br />
+        </div>
+
+        <script>
+
+            $('#tipo_expediente').change(function () {
+                //alert('You selected something');
+                var valor = $(this).val();
+
+                if (valor == "Judicial") {
+                    // show time div, hide fromTo div
+                    $('#judicial').show();
+                    $('#admin').hide();
+                }
+                else if (valor == "Administrativo") {
+                    // show fromTo div, hide time div
+                    $('#admin').show();
+                    $('#judicial').hide();
+                }
+            });
+
+
+
+            var valor = $('#tipo_expediente').val();
+
+            if (valor == "Judicial") {
+                // show time div, hide fromTo div
+                $('#judicial').show();
+                $('#admin').hide();
+            }
+            else if (valor == "Administrativo") {
+                // show fromTo div, hide time div
+                $('#admin').show();
+                $('#judicial').hide();
+            }
+
+        </script>
+    </div>
+</body>
+
+</html>
+

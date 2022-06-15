@@ -1,0 +1,139 @@
+﻿
+@{
+
+    ViewBag.Title = "Informacion_Caso";
+
+    if (Proyecto.Models.Credenciales.u_tipo == "ADMIN")
+    {
+        Layout = "~/Views/Shared/Layout_Admin.cshtml";
+    }
+    else
+    {
+        if (Proyecto.Models.Credenciales.u_tipo == "GUEST")
+        {
+            Layout = "~/Views/Shared/Layout_Guest.cshtml";
+        }
+        else
+        {
+            if (Proyecto.Models.Credenciales.u_tipo == "")
+            {
+                Response.Redirect("Index");
+            }
+        }
+    }
+
+}
+
+@model Proyecto.Models.Caso
+
+
+<!DOCTYPE html>
+
+<title>Informacion de Caso</title>
+<html>
+<body style="background-color:#E7E9EB">
+    <div id="cuerpo" onclick="Cerrar_Usuario_Notificaciones()">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+        <style>
+            h1, h2, h3, h4, h5, h6 {
+                font-family: "Oswald"
+            }
+
+            body {
+                font-family: "Open Sans"
+            }
+
+            .column {
+                float: left;
+                width: 50%;
+                padding: 10px;
+            }
+        </style>
+
+        <div class="w3-content w3-white" style="max-width:1300px">
+            @*<a href=@Url.Action("Mostrar_Casos", "Home") class="w3-button w3-red" style="position:absolute;font-size:16px"><i class="fa fa-arrow-circle-left"></i> Volver</a>*@
+            <!-- Header -->
+            <header class="w3-container w3-center w3-padding-48 w3-white">
+                <h1 class="w3-xxxlarge"><b>INFORMACIÓN DEL EXPEDIENTE</b></h1>
+            </header>
+
+            <div class="w3-container w3-center w3-white" style="font-size:24px">
+
+                <div class="column">
+                    <img src="~/Imagenes/agenda.png" style="width:55%">
+                    <br />
+                    <div style="margin-left:22%; text-align:left">
+                        <p>Expediente: <b>@Model.id_caso</b></p>
+                        <p>Estado: <b>@Model.estado</b></p>
+                        <p>Tipo de proceso: <b>@Model.tipo_proceso</b></p>
+                        <p>Descripción: <b>@Model.descripcion</b></p>
+                        <p>Tipo de expediente: <b>@Model.tipo_expediente</b></p>
+                        <p>Última modificación: <b>@Model.Obtener_Nombre_Completo_Usuario()</b></p>
+                        <div id="judicial">
+                            <p>Actora: <b>@Model.actora</b></p>
+                            <p>Demandada: <b>@Model.demandada</b></p>
+                            <p>Valor: <b>@Model.valor</b></p>
+                            <p>Juzgado: <b>@Model.juzgado</b></p>
+                        </div>
+                        <div id="admin">
+                            <p>Partes: <b>@Model.partes</b></p>
+                            <p>Unidad: <b>@Model.unidad</b></p>
+                        </div>
+                    </div>
+                    
+
+                </div>
+
+                <div class="column">
+                    <img src="~/Imagenes/archivo.png" style="width:28%">
+                    <br />
+                        @if (ViewBag.Archivado.Tables[0].Rows.Count > 0)
+                        {
+                        <div style="margin-left:22%; text-align:left">
+                            <p>Ubicación: <b>@ViewBag.Archivado.Tables[0].Rows[0]["UBICACION"].ToString()</b></p>
+                            <p>Tipo de archivo: <b>@ViewBag.Archivado.Tables[0].Rows[0]["TIPO_ARCHIVO"].ToString()</b></p>
+                            <p>Estado: <b>@ViewBag.Archivado.Tables[0].Rows[0]["ESTADO"].ToString()</b></p>
+                        </div>
+                            <a href=@Url.Action("Ver_Archivo", "Home", new { id_archivado = ViewBag.Archivado.Tables[0].Rows[0]["ID_ARCHIVO"].ToString()}) class="w3-button w3-green" style="font-size:14px"><i class="fa fa-pencil-square-o"></i> DOCUMENTO</a>
+                        }
+                        else
+                        {
+                            <div style="margin-left:22%; text-align:left">
+                                <p>Ubicación: <b></b></p>
+                                <p>Tipo de archivo: <b></b></p>
+                                <p>Estado: <b></b></p>
+                            </div>
+                        }
+                </div>
+
+            </div>
+            <br /><br /><br />
+            <br />
+        </div>
+        <div style="visibility:hidden">@Html.DropDownListFor(x => x.tipo_expediente, new List<SelectListItem>() { new SelectListItem() { Text = "Judicial" }, new SelectListItem { Text = "Administrativo" } })</div>
+        <script>
+
+
+            var valor = $('#tipo_expediente').val();
+
+            if (valor == "Judicial") {
+                // show time div, hide fromTo div
+                $('#judicial').show();
+                $('#admin').hide();
+            }
+            else if (valor == "Administrativo") {
+                // show fromTo div, hide time div
+                $('#admin').show();
+                $('#judicial').hide();
+            }
+
+        </script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@model Proyecto.Models.Login
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Index</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            border: 0;
+            outline: 0;
+            font-size: 100%;
+            vertical-align: baseline;
+            background: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .cuerpo {
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url('https://upload.wikimedia.org/wikipedia/commons/e/e6/Santa_B%C3%A1rbara_de_Heredia.jpg');
+            background-position: center;
+            background-size: cover;
+            position: absolute;
+        }
+
+        .caja-formulario {
+            width: 380px;
+            height: 480px;
+            position: relative;
+            margin: 6% auto;
+            background: #fff;
+            padding: 5px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .caja-boton {
+            width: 230px;
+            margin: 35px auto;
+            position: relative;
+            box-shadow: 0 0 20px 9px rgba(193, 193, 193, 0.85);
+            border-radius: 30px;
+        }
+
+        .cambiar-boton{
+            padding: 10px 30px;
+            cursor: pointer;
+            background-color:transparent;
+            border:0;
+            outline: none;
+            position: relative;
+
+        }
+
+        #boton {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 115px;
+            height: 100%;
+            background: linear-gradient(to right,#00d0ff,#ef18ff);
+            /*background: linear-gradient(to right,#ff105f,#ffad06);*/
+            /*background: linear-gradient(to right,#00d0ff,#ef18ff);*/
+            border-radius: 20px;
+            transition: -5s;
+        }
+
+        .grupo-form{
+            position:absolute;
+            width: 280px;
+            transition: .5s;
+        }
+
+        .espacio-input {
+            width: 100%;
+            padding: 10px 0;
+            margin: 5px 0;
+            border-bottom: 1px solid #999;
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            outline: none;
+            background-color: transparent;
+            border-radius: 10px;
+        }
+
+        .boton {
+            width: 80%;
+            padding: 10px 30px;
+            cursor: pointer;
+            display: block;
+            margin: auto;
+            background: linear-gradient(to right,#00d0ff,#ef18ff);
+            border: 0;
+            outline: none;
+            border-radius: 20px;
+        }
+
+        #id_login{
+            left: 50px;
+
+        }
+
+        #id_registro{
+            left:450px;
+        }
+
+        .errores {
+            width: 25%;
+            font-size:16px;
+            display: block;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.85);
+            border: 0;
+            outline: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cuerpo">
+        <div class="caja-formulario" id="caja_f">
+            <div class="caja-boton">
+                <div id="boton"></div>
+                <button type="button" class="cambiar-boton" onclick="cambiar_login()">Login</button>
+                <button type="button" class="cambiar-boton" onclick="cambiar_registro()">Registrarse</button>
+            </div>
+            <div class="grupo-form" id="id_login">
+                <h2>Login</h2>
+                @using (Html.BeginForm())
+                {
+                    @Html.TextBoxFor(x => x.cedula, new { @class = "espacio-input", placeholder = "Cédula", @tabindex = "-1" })
+                    <br /><br />
+                    @Html.TextBoxFor(x => x.password, new { @class = "espacio-input password", placeholder = "Contraseña", @type = "password", @tabindex = "-1" })
+                    <br /><br />
+                    <input class="boton" tabindex="-1" name="submitButton" type="submit" value="Login">
+                    <br /><br />
+                }
+                <dvi style="text-align:center">
+                    <p>¿Olvidó sus credenciales de usuario?</p>
+                    <a href=@Url.Action("Correo_Usuario", "Home")><p>Ingrese aquí</p></a>
+                </dvi>
+                
+            </div>
+            <div class="grupo-form" id="id_registro">
+                <h2>Registrarse</h2>
+                @using (Html.BeginForm())
+                {
+                    @Html.TextBoxFor(x => x.cedula, new { @class = "espacio-input", placeholder = "Cédula", @type = "number", @tabindex = "-1" })
+                    <br /><br />
+                    @Html.TextBoxFor(x => x.nombre, new { @class = "espacio-input", placeholder = "Nombre", @tabindex = "-1" })
+                    <br /><br />
+                    @Html.TextBoxFor(x => x.apellido1, new { @class = "espacio-input", placeholder = "Primer apellido", @tabindex = "-1" })
+                    <br /><br />
+                    @Html.TextBoxFor(x => x.apellido2, new { @class = "espacio-input", placeholder = "Segundo apellido", @tabindex = "-1" })
+                    <br /><br />
+                    @Html.TextBoxFor(x => x.password, new { @class = "password espacio-input", placeholder = "Contraseña", @type = "password", @tabindex = "-1" })
+                    <br /><br />
+                    <input class="boton" tabindex="-1" name="submitButton" type="submit" value="Registrar">
+                }
+
+            </div>
+        </div>
+        <div class="text-center errores">
+            <b style="color:red">@ViewBag.ErrorMessage</b>
+            <b style="color:black">@Html.ValidationSummary()</b>
+        </div>
+
+    </div>
+
+    <script>
+        var x = document.getElementById("id_login");
+        var y = document.getElementById("id_registro");
+        var b = document.getElementById("boton");
+
+        var f = document.getElementById("caja_f");
+
+        function cambiar_login() {
+            x.style.left = "50px";
+            y.style.left = "400px";
+            b.style.left = "0";
+
+            f.style.height = "480px";
+        }
+
+        function cambiar_registro() {
+            x.style.left = "400px";
+            y.style.left = "50px";
+            b.style.left = "115px";
+
+            f.style.height = "620px";
+        }
+    </script>
+
+</body>
+</html>

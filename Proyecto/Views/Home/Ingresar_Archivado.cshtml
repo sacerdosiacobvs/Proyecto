@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "Ingresar_Archivado";
+
+    if (Proyecto.Models.Credenciales.u_tipo == "ADMIN")
+    {
+        Layout = "~/Views/Shared/Layout_Admin.cshtml";
+    }
+    else
+    {
+        if (Proyecto.Models.Credenciales.u_tipo == "GUEST")
+        {
+            Layout = "~/Views/Shared/Layout_Guest.cshtml";
+        }
+        else
+        {
+            if (Proyecto.Models.Credenciales.u_tipo == "")
+            {
+                Response.Redirect("Index");
+            }
+        }
+    }
+
+}
+
+@model Proyecto.Models.Archivado
+
+<title>Ingresar Archivado</title>
+<html>
+<body style="background-color:#E7E9EB">
+    <div id="cuerpo" onclick="Cerrar_Usuario_Notificaciones()">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+        <style>
+            h1, h2, h3, h4, h5, h6 {
+                font-family: "Oswald"
+            }
+
+            body {
+                font-family: "Open Sans"
+            }
+
+            .column {
+                float: left;
+                width: 50%;
+                padding: 10px;
+            }
+        </style>
+
+        <div class="w3-content w3-white" style="max-width:1400px;min-height:875px">
+            <header class="w3-container w3-center w3-padding-48 w3-white">
+                <h1 class="w3-xxxlarge"><b>REGISTRAR NUEVO ARCHIVADO</b></h1>
+            </header>
+
+            <div class="w3-container w3-center w3-white" style="font-size:20px">
+                @using (Html.BeginForm("Ingresar_Archivado", "Home", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="column">
+                        <br />
+                        <img src="~/Imagenes/archivo.png" style="width:55%">
+                        <br /><br />
+                        @Html.ValidationSummary()
+                    </div>
+
+                    <div class="column">
+                        <br />
+                        <b>Número de expediente</b><br />
+                        @if (ViewBag.Parametros == true)
+                        {
+                            @Html.TextBoxFor(x => x.id_caso, new { @class = "badge-light", @readonly = "readonly" });
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(x => x.id_caso, new { @class = "badge-light" });
+                        }
+                        <br /><br />
+                        <b>Ubicación</b><br />
+                        @Html.TextAreaFor(x => x.ubicacion, new { @class = "badge-light", placeholder = "Descripción" })
+                        <br /><br />
+                        <b>Tipo de archivo</b><br />
+                        @Html.DropDownListFor(x => x.tipo_archivo, new List<SelectListItem>() { new SelectListItem() { Text = "Legal" }, new SelectListItem { Text="Institucional" }}
+                                    , " - Seleccionar tipo - ", new { @style = "width:240px" })
+                        <br /><br />
+                        <b>Estado</b><br />
+                        @Html.DropDownListFor(x => x.estado, new List<SelectListItem>() { new SelectListItem() { Text = "Finalizado" }, new SelectListItem { Text="Sin atender" }, new SelectListItem { Text = "Sin especial gestión" } }
+                                    , " - Seleccionar estado - ", new { @style = "width:240px" })
+                        <br /><br />
+                        <b>Archivo</b><br />
+                        @Html.TextBoxFor(x => x.archivo, new { @type = "file", @accept = ".pdf" })
+                        <br /><br />
+                        <input class="w3-button w3-green" style="font-size:25px" type="submit" value="Aceptar">
+                        <br /><br />
+                        <p style="color:red">@ViewBag.ErrorMessage</p>
+                        <p style="color:green">@ViewBag.SuccessMessage</p>
+                    </div>
+
+                }
+            </div>
+            <br /><br /><br /><br />
+        </div>
+
+    </div>
+</body>
+
+</html>
+
