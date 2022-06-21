@@ -1,4 +1,5 @@
-﻿
+﻿@using System.Data;
+
 @{
     ViewBag.Title = "Mostrar_Contactos";
 
@@ -22,6 +23,8 @@
     }
 
 }
+
+@model DataTable
 
 <!DOCTYPE html>
 
@@ -94,14 +97,14 @@
                         </thead>
                         <tbody>
 
-                            @{foreach (var item in ViewBag.Contactos.Tables[0].Rows)
-                                {
+                            @{foreach (DataRow fila in Model.Rows)
+                                                    {
                                     <tr>
-                                        <td> @item["NOMBRE"].ToString() </td>
-                                        <td> @item["CORREO"].ToString() </td>
+                                        <td> @fila["NOMBRE"].ToString() </td>
+                                        <td> @fila["CORREO"].ToString() </td>
                                         <td>
-                                            <a href=@Url.Action("Modificar_Contacto", "Home", new { id = @item["ID_PERSONA"] }) class="w3-button w3-green" style="font-size:14px"><i class="fa fa-pencil-square-o"></i> Editar</a>
-                                            <a href=@Url.Action("Eliminar_Contacto", "Home", new { id = @item["ID_PERSONA"] }) class="w3-button w3-red" style="font-size:14px"><i class="fa fa-times"></i> Borrar</a>
+                                            <a href=@Url.Action("Modificar_Contacto", "Home", new { id = fila["ID_PERSONA"] }) class="w3-button w3-green" style="font-size:14px"><i class="fa fa-pencil-square-o"></i> Editar</a>
+                                            <a href=@Url.Action("Eliminar_Contacto", "Home", new { id = fila["ID_PERSONA"] }) class="w3-button w3-red" style="font-size:14px"><i class="fa fa-times"></i> Borrar</a>
                                         </td>
                                     </tr>
 

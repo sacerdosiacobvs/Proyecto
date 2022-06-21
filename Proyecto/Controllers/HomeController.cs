@@ -4,6 +4,10 @@ using Proyecto.Models;
 using System.Net.Mail;
 using System.IO;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Web.Script.Serialization;
+using System.Data;
+using Newtonsoft.Json;
 
 namespace Proyecto.Controllers
 {
@@ -608,9 +612,23 @@ namespace Proyecto.Controllers
         [HttpGet]
         public ActionResult Mostrar_Contactos()
         {
-            Contacto contacto = new Contacto();
-            ViewBag.Contactos = contacto.Obtener_Contactos_Tabla();
-            return View(contacto);
+
+            HttpClient cliente = new HttpClient();
+            cliente.BaseAddress = new Uri("http://localhost:8099/api/");
+
+            var respuesta = cliente.GetAsync("Contacto/Obtener_Contactos");
+            respuesta.Wait();
+
+            var resultado = respuesta.Result;
+
+            if (resultado.IsSuccessStatusCode)
+            {
+                DataTable dt = new DataTable();
+                dt = JsonConvert.DeserializeObject<DataTable>(resultado.Content.ReadAsStringAsync().Result);
+
+                return View(dt);
+            }
+            return RedirectToAction("Inicio");
         }
 
         [HttpGet]

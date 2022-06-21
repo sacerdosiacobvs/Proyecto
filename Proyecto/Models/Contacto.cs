@@ -26,6 +26,7 @@ namespace Proyecto.Models
         public string correo { get; set; }
 
 
+
         string connectionString = "Server=localhost;Database=casos_legales;Uid=root;Pwd=123456;convert zero datetime=True;";
 
         public void Crear_Contacto()
@@ -62,15 +63,15 @@ namespace Proyecto.Models
         }
 
 
-        public DataSet Obtener_Contactos_Tabla()
-        {
-            DataSet ds = new DataSet();
-            MySqlConnection con = new MySqlConnection(connectionString);
-            MySqlCommand sql = new MySqlCommand("SELECT * FROM contactos JOIN personas WHERE contactos.ID_PERSONA = personas.ID_PERSONA;", con);
-            MySqlDataAdapter da = new MySqlDataAdapter(sql);
-            da.Fill(ds);
-            return ds;
-        }
+        //public DataSet Obtener_Contactos_Tabla()
+        //{
+        //    DataSet ds = new DataSet();
+        //    MySqlConnection con = new MySqlConnection(connectionString);
+        //    MySqlCommand sql = new MySqlCommand("SELECT * FROM contactos JOIN personas WHERE contactos.ID_PERSONA = personas.ID_PERSONA;", con);
+        //    MySqlDataAdapter da = new MySqlDataAdapter(sql);
+        //    da.Fill(ds);
+        //    return ds;
+        //}
 
         public void Eliminar_Contacto()
         {
